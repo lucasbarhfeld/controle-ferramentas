@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\EquipamentoController;
 use App\Http\Controllers\EquipamentoImportController;
 use App\Http\Controllers\CalibracaoController;
+use App\Http\Controllers\CadastroController;
 use App\Http\Controllers\CentroCustoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeuController;
@@ -41,6 +42,9 @@ Route::middleware('auth')->group(function () {
         ->name('calibracoes.store');
 
     Route::middleware('admin')->group(function () {
+        Route::get('/cadastros', [CadastroController::class, 'index'])
+            ->name('cadastros.index');
+
         Route::post('/equipamentos/importar', EquipamentoImportController::class)
             ->name('equipamentos.import');
 

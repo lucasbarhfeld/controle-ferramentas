@@ -22,10 +22,10 @@
         ],
         $isAdmin
             ? [
-                'label' => 'Usuários',
-                'route' => 'usuarios.index',
-                'active' => request()->routeIs('usuarios.*') || request()->routeIs('centros-custo.*'),
-                'icon' => 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20a6 6 0 0 1 12 0M17 10a2.5 2.5 0 1 0 0-5M15 20a5 5 0 0 1 7 0',
+                'label' => 'Cadastros',
+                'route' => 'cadastros.index',
+                'active' => request()->routeIs('cadastros.*') || request()->routeIs('usuarios.*') || request()->routeIs('centros-custo.*'),
+                'icon' => 'M4 5h16v14H4zM8 9h8M8 13h5',
             ]
             : [
                 'label' => 'Minha Área',

@@ -1,3 +1,31 @@
+.app-vinculo-icon {
+    display: block;
+    width: 1.25rem;
+    height: 1.25rem;
+    min-width: 1.25rem;
+    max-width: 1.25rem;
+    flex: none;
+}
+
+.app-choice-option .app-vinculo-icon,
+.app-choice-button .app-vinculo-icon {
+    width: 1rem;
+    height: 1rem;
+    min-width: 1rem;
+    max-width: 1rem;
+}
+
+.app-choice-button.is-open .app-vinculo-icon {
+    transform: none;
+}
+
+.app-choice-button .app-choice-chevron {
+    width: 1rem;
+    height: 1rem;
+    min-width: 1rem;
+    max-width: 1rem;
+}
+
 .app-vinculo-type {
     display: flex;
     min-height: 5rem;

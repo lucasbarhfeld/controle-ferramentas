@@ -1,10 +1,9 @@
 @props([
     'type' => 'sem_responsavel',
-    'class' => 'h-5 w-5',
 ])
 
 <svg
-    {{ $attributes->merge(['class' => $class]) }}
+    {{ $attributes->class(['app-vinculo-icon']) }}
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"
     viewBox="0 0 24 24"

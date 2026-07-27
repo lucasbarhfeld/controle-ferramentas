@@ -103,7 +103,7 @@
                     <x-vinculo-icon type="usuario" class="h-4 w-4 shrink-0" />
                     <span class="truncate" x-text="usuarioLabel"></span>
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
+                <svg class="app-choice-chevron" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5.2 7.2a1 1 0 0 1 1.4 0L10 10.6l3.4-3.4a1 1 0 1 1 1.4 1.4l-4.1 4.1a1 1 0 0 1-1.4 0L5.2 8.6a1 1 0 0 1 0-1.4z" clip-rule="evenodd" />
                 </svg>
             </button>
@@ -138,7 +138,7 @@
                     <x-vinculo-icon type="centro_custo" class="h-4 w-4 shrink-0" />
                     <span class="truncate" x-text="centroLabel"></span>
                 </span>
-                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
+                <svg class="app-choice-chevron" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd" d="M5.2 7.2a1 1 0 0 1 1.4 0L10 10.6l3.4-3.4a1 1 0 1 1 1.4 1.4l-4.1 4.1a1 1 0 0 1-1.4 0L5.2 8.6a1 1 0 0 1 0-1.4z" clip-rule="evenodd" />
                 </svg>
             </button>

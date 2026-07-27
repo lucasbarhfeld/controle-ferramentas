@@ -12,16 +12,19 @@
             @endif
 
             <section class="py-3 lg:app-card lg:p-6">
+                <a href="{{ route('cadastros.index') }}" class="inline-flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] app-accent-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m15 18-6-6 6-6" />
+                    </svg>
+                    Cadastros
+                </a>
                 <div class="flex items-end justify-between gap-4">
                     <div>
-                        <p class="text-[11px] font-semibold uppercase tracking-[0.3em] app-accent-text">Administração</p>
                         <h1 class="mt-2 text-2xl font-black leading-tight">Centros de custo</h1>
                         <p class="mt-1 text-sm app-muted">{{ $centrosCusto->count() }} centro(s) cadastrado(s)</p>
                     </div>
                     <a href="{{ route('centros-custo.create') }}" class="app-button app-button-primary shrink-0">Cadastrar</a>
                 </div>
-
-                <x-admin-tabs active="centros-custo" />
             </section>
 
             <section class="mt-4 grid gap-3 lg:grid-cols-2 xl:grid-cols-3">
