@@ -70,12 +70,18 @@ class CentroCustoController extends Controller
             'nome' => trim((string) $request->input('nome')) ?: null,
         ]);
 
+        $codigoRule = Rule::unique('centros_custo', 'codigo');
+
+        if ($centroCusto) {
+            $codigoRule->ignore($centroCusto->id);
+        }
+
         $dados = $request->validate([
             'codigo' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('centros_custo', 'codigo')->ignore($centroCusto?->id),
+                $codigoRule,
             ],
             'nome' => ['nullable', 'string', 'max:255'],
             'descricao' => ['nullable', 'string', 'max:1000'],

@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Equipamento extends Model
 {
@@ -93,6 +94,15 @@ class Equipamento extends Model
             self::VINCULO_CENTRO_CUSTO => 'Centro de custo',
             default => 'Sem vinculação',
         };
+    }
+
+    public static function nomePareceVinculoOrganizacional(?string $nome): bool
+    {
+        $normalizado = Str::of((string) $nome)->lower()->ascii()->squish()->toString();
+        $compacto = preg_replace('/[^a-z0-9]+/', '', $normalizado);
+
+        return in_array($normalizado, ['armario coletivo', 'armario de uso coletivo'], true)
+            || preg_match('/^(?:cc|centrodecusto)\d+$/', $compacto) === 1;
     }
 
     public function getDiasRestantesAttribute()

@@ -7,6 +7,7 @@ use App\Models\Equipamento;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class EquipamentoController extends Controller
@@ -48,7 +49,7 @@ class EquipamentoController extends Controller
 
     public function create()
     {
-        $usuarios = User::orderBy('name')->get();
+        $usuarios = $this->usuariosResponsaveis();
         $centrosCusto = CentroCusto::where('ativo', true)->orderBy('codigo')->get();
 
         return view('equipamentos.create', compact('usuarios', 'centrosCusto'));
@@ -147,7 +148,7 @@ class EquipamentoController extends Controller
 
     public function edit(Equipamento $equipamento)
     {
-        $usuarios = User::orderBy('name')->get();
+        $usuarios = $this->usuariosResponsaveis();
         $centrosCusto = CentroCusto::query()
             ->where('ativo', true)
             ->when(
@@ -201,6 +202,14 @@ class EquipamentoController extends Controller
         }
 
         return $dados;
+    }
+
+    private function usuariosResponsaveis(): Collection
+    {
+        return User::orderBy('name')
+            ->get()
+            ->reject(fn (User $usuario) => Equipamento::nomePareceVinculoOrganizacional($usuario->name))
+            ->values();
     }
 
     public function destroy(Equipamento $equipamento)
