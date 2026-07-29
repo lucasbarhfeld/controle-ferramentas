@@ -62,7 +62,7 @@ class EquipamentoSpreadsheetImporter
         $centrosCusto = collect();
 
         CentroCusto::query()->get()->each(function (CentroCusto $centroCusto) use ($centrosCusto): void {
-            $centrosCusto->put($this->normalize($centroCusto->codigo), $centroCusto);
+            $this->cacheCentroCusto($centrosCusto, $centroCusto);
 
             if ($centroCusto->nome) {
                 $centrosCusto->put($this->normalize($centroCusto->nome), $centroCusto);
@@ -238,7 +238,7 @@ class EquipamentoSpreadsheetImporter
         $centroCusto = $centrosCusto->get($normalizado);
 
         if (! $centroCusto && preg_match('/^(?:cc|centrodecusto)(\d+)$/', $compacto, $matches)) {
-            $codigo = 'CC ' . $matches[1];
+            $codigo = $matches[1];
             $centroCusto = CentroCusto::firstOrCreate(
                 ['codigo' => $codigo],
                 [
@@ -248,7 +248,7 @@ class EquipamentoSpreadsheetImporter
                 ],
             );
 
-            $centrosCusto->put($this->normalize($centroCusto->codigo), $centroCusto);
+            $this->cacheCentroCusto($centrosCusto, $centroCusto);
         }
 
         if ($centroCusto) {
@@ -270,6 +270,22 @@ class EquipamentoSpreadsheetImporter
         }
 
         return [$semResponsavel, false];
+    }
+
+    private function cacheCentroCusto($centrosCusto, CentroCusto $centroCusto): void
+    {
+        $centrosCusto->put($this->normalize($centroCusto->codigo), $centroCusto);
+
+        $codigoCompacto = preg_replace(
+            '/[^a-z0-9]+/',
+            '',
+            Str::ascii(Str::lower($centroCusto->codigo)),
+        );
+
+        if (preg_match('/^(?:cc)?(\d+)$/', $codigoCompacto, $matches)) {
+            $centrosCusto->put($this->normalize($matches[1]), $centroCusto);
+            $centrosCusto->put($this->normalize('CC ' . $matches[1]), $centroCusto);
+        }
     }
 
     private function date(mixed $value): ?Carbon
