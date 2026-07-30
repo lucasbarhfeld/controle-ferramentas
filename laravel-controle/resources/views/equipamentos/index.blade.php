@@ -38,7 +38,6 @@
                 <div class="flex items-end justify-between gap-4">
                     <div class="min-w-0">
                         <p class="text-[11px] font-semibold uppercase tracking-[0.3em] app-accent-text">Ferramentas</p>
-                        <h1 class="mt-2 text-2xl font-black leading-tight lg:text-4xl">Total: {{ $equipamentos->count() }}</h1>
                     </div>
                     <div class="flex shrink-0 items-center gap-2">
                         @if (auth()->user()->isAdmin())
