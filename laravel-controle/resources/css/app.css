@@ -629,6 +629,19 @@
     box-shadow: inset 3px 0 0 var(--app-accent);
   }
 
+  .app-equipment-choice-option {
+    display: grid;
+    grid-template-columns: 1.25rem 1rem minmax(0, 1fr);
+    align-items: center;
+    justify-content: stretch;
+    column-gap: 0.75rem;
+  }
+
+  .app-equipment-choice-label {
+    width: 100%;
+    text-align: left;
+  }
+
   .app-checkbox {
     border-color: var(--app-border);
     background: rgba(12, 21, 31, 0.96);

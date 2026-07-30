@@ -104,7 +104,7 @@
                                 @foreach ($equipamentos as $equipamento)
                                     <button
                                         type="button"
-                                        class="app-choice-option"
+                                        class="app-choice-option app-equipment-choice-option"
                                         :class="{ 'is-selected': selected.includes('{{ $equipamento->id }}') }"
                                         @click="toggleEquipamento('{{ $equipamento->id }}')"
                                     >
@@ -114,7 +114,7 @@
                                             </svg>
                                         </span>
                                         <x-vinculo-icon :type="$equipamento->tipo_vinculacao_efetivo" class="h-4 w-4 shrink-0" />
-                                        <span class="min-w-0 truncate">{{ $equipamento->nome }} - {{ $equipamento->vinculo_label }}</span>
+                                        <span class="app-equipment-choice-label min-w-0 truncate">{{ $equipamento->nome }} - {{ $equipamento->vinculo_label }}</span>
                                     </button>
                                 @endforeach
                             </div>

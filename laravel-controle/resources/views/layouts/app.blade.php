@@ -24,7 +24,7 @@
         <link rel="apple-touch-icon" href="{{ asset('pwa-icon-192.png') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <link rel="stylesheet" href="{{ asset('vinculos.css') }}?v=4">
+        <link rel="stylesheet" href="{{ asset('vinculos.css') }}?v=5">
     </head>
     <body class="font-sans antialiased">
         <div

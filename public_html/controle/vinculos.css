@@ -19,6 +19,19 @@
     transform: none;
 }
 
+.app-equipment-choice-option {
+    display: grid;
+    grid-template-columns: 1.25rem 1rem minmax(0, 1fr);
+    align-items: center;
+    justify-content: stretch;
+    column-gap: 0.75rem;
+}
+
+.app-equipment-choice-label {
+    width: 100%;
+    text-align: left;
+}
+
 .app-choice-button .app-choice-chevron {
     width: 1rem;
     height: 1rem;
