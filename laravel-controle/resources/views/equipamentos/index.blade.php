@@ -1,9 +1,9 @@
 @php
     $statusAtual = request('status');
-    $filtrosAtivos = $busca !== '' || $responsavelId;
+    $filtrosAtivos = $busca !== '' || $responsavelFiltro !== '';
     $parametrosBase = array_filter([
         'busca' => $busca,
-        'responsavel' => $responsavelId,
+        'responsavel' => $responsavelFiltro,
     ], fn ($valor) => $valor !== null && $valor !== '');
     $filtros = [
         ['label' => 'Todas', 'status' => null, 'count' => $statusCounts['todas'] ?? 0],
@@ -90,11 +90,19 @@
                         <label for="filtro-responsavel" class="sr-only">Filtrar por responsável</label>
                         <select id="filtro-responsavel" name="responsavel" class="app-select">
                             <option value="">Todos os responsáveis</option>
-                            @foreach ($usuariosFiltro as $usuario)
-                                <option value="{{ $usuario->id }}" @selected((string) $responsavelId === (string) $usuario->id)>
-                                    {{ $usuario->name }}
-                                </option>
-                            @endforeach
+                            <option
+                                value="{{ \App\Models\Equipamento::VINCULO_ARMARIO_COLETIVO }}"
+                                @selected($responsavelFiltro === \App\Models\Equipamento::VINCULO_ARMARIO_COLETIVO)
+                            >
+                                Armário coletivo
+                            </option>
+                            <optgroup label="Pessoas">
+                                @foreach ($usuariosFiltro as $usuario)
+                                    <option value="{{ $usuario->id }}" @selected($responsavelFiltro === (string) $usuario->id)>
+                                        {{ $usuario->name }}
+                                    </option>
+                                @endforeach
+                            </optgroup>
                         </select>
                     </div>
 

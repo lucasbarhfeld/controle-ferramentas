@@ -5,7 +5,6 @@
                 <p class="text-[11px] font-semibold uppercase tracking-[0.3em] app-accent-text">Administração</p>
                 <h1 class="mt-2 text-2xl font-black leading-tight lg:text-4xl">Cadastros</h1>
                 <p class="mt-2 max-w-2xl text-sm leading-6 app-muted">
-                    Gerencie os acessos ao sistema e os centros de custo usados na vinculação das ferramentas.
                 </p>
             </section>
 
@@ -19,7 +18,6 @@
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] app-muted">Acessos</p>
                             <h2 class="mt-1 text-xl font-black">Usuários</h2>
                             <p class="mt-2 text-sm leading-6 app-muted">
-                                Cadastre pessoas, defina o nome de exibição e controle o perfil de acesso.
                             </p>
                         </div>
                     </div>
@@ -54,7 +52,6 @@
                             <p class="text-[10px] font-black uppercase tracking-[0.2em] app-muted">Organização</p>
                             <h2 class="mt-1 text-xl font-black">Centros de custo</h2>
                             <p class="mt-2 text-sm leading-6 app-muted">
-                                Organize ferramentas vinculadas a setores sem criar usuários fictícios.
                             </p>
                         </div>
                     </div>

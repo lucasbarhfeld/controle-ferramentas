@@ -20,9 +20,7 @@ class EquipamentoController extends Controller
 
         $busca = trim((string) $request->input('busca', ''));
         $busca = mb_substr($busca, 0, 100);
-        $responsavelId = $request->filled('responsavel')
-            ? $request->integer('responsavel')
-            : null;
+        $responsavelFiltro = trim((string) $request->input('responsavel', ''));
 
         $equipamentosFiltrados = $todosEquipamentos;
 
@@ -37,10 +35,15 @@ class EquipamentoController extends Controller
             );
         }
 
-        if ($responsavelId) {
+        if ($responsavelFiltro === Equipamento::VINCULO_ARMARIO_COLETIVO) {
+            $equipamentosFiltrados = $equipamentosFiltrados->filter(
+                fn (Equipamento $equipamento) => $equipamento->tipo_vinculacao_efetivo
+                    === Equipamento::VINCULO_ARMARIO_COLETIVO,
+            );
+        } elseif (ctype_digit($responsavelFiltro) && (int) $responsavelFiltro > 0) {
             $equipamentosFiltrados = $equipamentosFiltrados->where(
                 'usuario_responsavel_id',
-                $responsavelId,
+                (int) $responsavelFiltro,
             );
         }
 
@@ -82,7 +85,7 @@ class EquipamentoController extends Controller
             'statusCounts',
             'usuariosFiltro',
             'busca',
-            'responsavelId',
+            'responsavelFiltro',
         ));
     }
 
