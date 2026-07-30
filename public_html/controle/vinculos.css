@@ -156,3 +156,11 @@ html[data-theme='light'] .app-vinculo-notice {
     background: #e7f8fa;
     color: #155e75;
 }
+
+@media (max-width: 1023px) {
+    html[data-theme='light'] .app-shell .lg\:app-card {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+    }
+}
