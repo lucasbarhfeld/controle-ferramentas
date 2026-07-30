@@ -3,5 +3,7 @@
 **/node_modules/
 **/.idea/
 **/.vscode/
+**/.env.production.example/
+**/.env.backup-before-key/
 **/.phpunit.result.cache
 deploy/hostinger-atualizacao-vinculos-centros-custo.zip
