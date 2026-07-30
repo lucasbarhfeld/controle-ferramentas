@@ -8,7 +8,9 @@ Alpine.start();
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        const swUrl = new URL('sw.js', document.baseURI);
-        navigator.serviceWorker.register(swUrl).catch(() => {});
+        const swUrl = new URL('sw-v8.js', document.baseURI);
+        navigator.serviceWorker.register(swUrl, {
+            updateViaCache: 'none',
+        }).catch(() => {});
     });
 }
