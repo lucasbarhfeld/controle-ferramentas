@@ -1,9 +1,12 @@
-const CACHE_NAME = 'controle-ferramentas-v1';
+const CACHE_NAME = 'controle-ferramentas-v2';
 const STATIC_ASSETS = [
   './manifest.webmanifest',
   './pwa-icon.svg',
   './pwa-icon-192.png',
   './pwa-icon-512.png',
+  './favicon-32.png',
+  './favicon.ico',
+  './apple-touch-icon.png',
   './logo-lippel.svg'
 ];
 
