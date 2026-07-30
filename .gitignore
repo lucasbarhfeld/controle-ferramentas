@@ -1,9 +1,12 @@
 **/.env
+**/.env.*
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/u899807498_controle3
 **/vendor/
 **/node_modules/
 **/.idea/
 **/.vscode/
-**/.env.production.example/
-**/.env.backup-before-key/
 **/.phpunit.result.cache
 deploy/hostinger-atualizacao-vinculos-centros-custo.zip
