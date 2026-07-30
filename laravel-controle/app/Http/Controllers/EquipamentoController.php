@@ -12,23 +12,49 @@ use Illuminate\Support\Str;
 
 class EquipamentoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $todosEquipamentos = Equipamento::with(['usuarioResponsavel', 'centroCusto'])
             ->orderBy('nome')
             ->get();
 
+        $busca = trim((string) $request->input('busca', ''));
+        $busca = mb_substr($busca, 0, 100);
+        $responsavelId = $request->filled('responsavel')
+            ? $request->integer('responsavel')
+            : null;
+
+        $equipamentosFiltrados = $todosEquipamentos;
+
+        if ($busca !== '') {
+            $buscaNormalizada = $this->normalizeSearch($busca);
+
+            $equipamentosFiltrados = $equipamentosFiltrados->filter(
+                fn (Equipamento $equipamento) => Str::contains(
+                    $this->normalizeSearch($equipamento->nome),
+                    $buscaNormalizada,
+                ),
+            );
+        }
+
+        if ($responsavelId) {
+            $equipamentosFiltrados = $equipamentosFiltrados->where(
+                'usuario_responsavel_id',
+                $responsavelId,
+            );
+        }
+
         $statusCounts = [
-            'todas' => $todosEquipamentos->count(),
-            'vencida' => $todosEquipamentos->where('status_calibragem_key', 'vencida')->count(),
-            'critica' => $todosEquipamentos->where('status_calibragem_key', 'critica')->count(),
-            'proxima' => $todosEquipamentos->where('status_calibragem_key', 'atencao')->count(),
-            'em_dia' => $todosEquipamentos->where('status_calibragem_key', 'em-dia')->count(),
+            'todas' => $equipamentosFiltrados->count(),
+            'vencida' => $equipamentosFiltrados->where('status_calibragem_key', 'vencida')->count(),
+            'critica' => $equipamentosFiltrados->where('status_calibragem_key', 'critica')->count(),
+            'proxima' => $equipamentosFiltrados->where('status_calibragem_key', 'atencao')->count(),
+            'em_dia' => $equipamentosFiltrados->where('status_calibragem_key', 'em-dia')->count(),
         ];
 
-        $equipamentos = $todosEquipamentos;
+        $equipamentos = $equipamentosFiltrados;
 
-        $filtroStatus = request('status');
+        $filtroStatus = $request->input('status');
 
         if ($filtroStatus) {
             $statusMap = [
@@ -44,7 +70,20 @@ class EquipamentoController extends Controller
             });
         }
 
-        return view('equipamentos.index', compact('equipamentos', 'statusCounts'));
+        $usuariosFiltro = User::query()
+            ->whereHas('equipamentosResponsaveis')
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->reject(fn (User $usuario) => Equipamento::nomePareceVinculoOrganizacional($usuario->name))
+            ->values();
+
+        return view('equipamentos.index', compact(
+            'equipamentos',
+            'statusCounts',
+            'usuariosFiltro',
+            'busca',
+            'responsavelId',
+        ));
     }
 
     public function create()
@@ -210,6 +249,15 @@ class EquipamentoController extends Controller
             ->get()
             ->reject(fn (User $usuario) => Equipamento::nomePareceVinculoOrganizacional($usuario->name))
             ->values();
+    }
+
+    private function normalizeSearch(string $value): string
+    {
+        return Str::of($value)
+            ->lower()
+            ->ascii()
+            ->squish()
+            ->toString();
     }
 
     public function destroy(Equipamento $equipamento)

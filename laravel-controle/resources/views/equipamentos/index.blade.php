@@ -1,5 +1,10 @@
 @php
     $statusAtual = request('status');
+    $filtrosAtivos = $busca !== '' || $responsavelId;
+    $parametrosBase = array_filter([
+        'busca' => $busca,
+        'responsavel' => $responsavelId,
+    ], fn ($valor) => $valor !== null && $valor !== '');
     $filtros = [
         ['label' => 'Todas', 'status' => null, 'count' => $statusCounts['todas'] ?? 0],
         ['label' => 'Vencidas', 'status' => 'vencida', 'count' => $statusCounts['vencida'] ?? 0],
@@ -60,10 +65,71 @@
                     </div>
                 </div>
 
-                <div class="app-filter-strip mt-4">
+                <form method="GET" action="{{ route('equipamentos.index') }}" class="app-tool-filters">
+                    @if ($statusAtual)
+                        <input type="hidden" name="status" value="{{ $statusAtual }}">
+                    @endif
+
+                    <div class="app-tool-search">
+                        <label for="busca-equipamento" class="sr-only">Buscar pelo nome do equipamento</label>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="app-tool-search-icon app-muted" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="7" />
+                            <path stroke-linecap="round" d="m20 20-4-4" />
+                        </svg>
+                        <input
+                            id="busca-equipamento"
+                            type="search"
+                            name="busca"
+                            value="{{ $busca }}"
+                            maxlength="100"
+                            placeholder="Buscar equipamento pelo nome"
+                            class="app-input"
+                        >
+                    </div>
+
+                    <div class="app-tool-responsavel">
+                        <label for="filtro-responsavel" class="sr-only">Filtrar por responsável</label>
+                        <select id="filtro-responsavel" name="responsavel" class="app-select">
+                            <option value="">Todos os responsáveis</option>
+                            @foreach ($usuariosFiltro as $usuario)
+                                <option value="{{ $usuario->id }}" @selected((string) $responsavelId === (string) $usuario->id)>
+                                    {{ $usuario->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="app-tool-filter-actions">
+                        <button type="submit" class="app-button app-button-primary">
+                            Filtrar
+                        </button>
+
+                        @if ($filtrosAtivos)
+                            <a
+                                href="{{ route('equipamentos.index', array_filter(['status' => $statusAtual])) }}"
+                                class="app-icon-button app-button-secondary"
+                                aria-label="Limpar busca e responsável"
+                                title="Limpar filtros"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path stroke-linecap="round" d="m6 6 12 12M18 6 6 18" />
+                                </svg>
+                            </a>
+                        @endif
+                    </div>
+                </form>
+
+                <div class="app-filter-strip mt-3">
                     @foreach ($filtros as $filtro)
+                        @php
+                            $parametros = $parametrosBase;
+
+                            if ($filtro['status']) {
+                                $parametros['status'] = $filtro['status'];
+                            }
+                        @endphp
                         <a
-                            href="{{ $filtro['status'] ? route('equipamentos.index', ['status' => $filtro['status']]) : route('equipamentos.index') }}"
+                            href="{{ route('equipamentos.index', $parametros) }}"
                             class="app-filter-chip {{ $loop->first ? 'is-wide' : '' }} {{ $statusAtual === $filtro['status'] || (!$statusAtual && !$filtro['status']) ? 'is-active' : '' }}"
                         >
                             <span>{{ $filtro['label'] }}</span>

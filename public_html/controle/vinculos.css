@@ -26,6 +26,66 @@
     max-width: 1rem;
 }
 
+.app-tool-filters {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: .5rem;
+    margin-top: 1rem;
+}
+
+.app-tool-search {
+    position: relative;
+    min-width: 0;
+}
+
+.app-tool-search .app-input {
+    padding-left: 3rem;
+}
+
+.app-tool-search-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    z-index: 1;
+    width: 1.15rem;
+    height: 1.15rem;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+.app-tool-responsavel {
+    min-width: 0;
+}
+
+.app-tool-filter-actions {
+    display: flex;
+    gap: .5rem;
+}
+
+.app-tool-filter-actions .app-button-primary {
+    flex: 1;
+}
+
+@media (min-width: 1024px) {
+    .app-tool-filters {
+        display: flex;
+        align-items: stretch;
+    }
+
+    .app-tool-search {
+        flex: 1;
+    }
+
+    .app-tool-responsavel {
+        width: 18rem;
+        flex: none;
+    }
+
+    .app-tool-filter-actions .app-button-primary {
+        flex: none;
+    }
+}
+
 .app-vinculo-type {
     display: flex;
     min-height: 5rem;
