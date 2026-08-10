@@ -88,6 +88,13 @@
 
                         <div class="mt-5 space-y-3 text-sm">
                             <div class="flex items-center justify-between gap-3 border-t border-slate-800 pt-3">
+                                <span class="text-slate-500">Patrimônio</span>
+                                <span class="truncate text-right text-white">
+                                    {{ $equipamento->patrimonio ?? '-' }}
+                                </span>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-3 border-t border-slate-800 pt-3">
                                 <span class="text-slate-500">Fabricante</span>
                                 <span class="truncate text-right text-white">
                                     {{ $equipamento->fabricante ?? '-' }}
@@ -169,7 +176,13 @@
                                     </p>
                                 </div>
 
-                                <p class="mt-3 text-sm leading-6 text-slate-300">
+                                @if ($calibracao->certificado)
+                                    <p class="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+                                        Certificado: <span class="normal-case tracking-normal text-slate-200">{{ $calibracao->certificado }}</span>
+                                    </p>
+                                @endif
+
+                                <p class="mt-2 text-sm leading-6 text-slate-300">
                                     {{ $calibracao->observacoes ?? 'Nenhuma observação registrada.' }}
                                 </p>
                             </div>

@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Calibracao;
-use App\Models\CentroCusto;
-use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,15 +11,20 @@ use Illuminate\Support\Str;
 class Equipamento extends Model
 {
     public const VINCULO_SEM_RESPONSAVEL = 'sem_responsavel';
+
     public const VINCULO_USUARIO = 'usuario';
+
     public const VINCULO_ARMARIO_COLETIVO = 'armario_coletivo';
+
     public const VINCULO_CENTRO_CUSTO = 'centro_custo';
 
     public const LIMITE_CRITICO_DIAS = 5;
+
     public const LIMITE_ATENCAO_DIAS = 15;
 
     protected $fillable = [
         'codigo',
+        'patrimonio',
         'nome',
         'fabricante',
         'modelo',
@@ -58,7 +60,7 @@ class Equipamento extends Model
 
     public function getProximaCalibragemAttribute()
     {
-        if (!$this->ultima_calibragem) {
+        if (! $this->ultima_calibragem) {
             return null;
         }
 
@@ -107,7 +109,7 @@ class Equipamento extends Model
 
     public function getDiasRestantesAttribute()
     {
-        if (!$this->proxima_calibragem) {
+        if (! $this->proxima_calibragem) {
             return null;
         }
 
@@ -116,7 +118,7 @@ class Equipamento extends Model
 
     public function getStatusCalibragemKeyAttribute(): string
     {
-        if (!$this->ultima_calibragem) {
+        if (! $this->ultima_calibragem) {
             return 'sem-calibracao';
         }
 

@@ -30,6 +30,12 @@
                             </div>
                         </div>
 
+                        @if ($calibracao->certificado)
+                            <p class="mt-2 truncate text-xs font-semibold app-muted">
+                                Certificado: <span class="font-normal">{{ $calibracao->certificado }}</span>
+                            </p>
+                        @endif
+
                         @if ($calibracao->observacoes)
                             <p class="mt-2 line-clamp-2 rounded-xl border border-slate-700/40 bg-slate-950/25 px-3 py-2 text-xs leading-5 app-muted">{{ $calibracao->observacoes }}</p>
                         @endif

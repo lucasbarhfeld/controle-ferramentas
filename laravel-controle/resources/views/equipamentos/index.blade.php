@@ -70,7 +70,7 @@
                     @endif
 
                     <div class="app-tool-search">
-                        <label for="busca-equipamento" class="sr-only">Buscar pelo nome do equipamento</label>
+                        <label for="busca-equipamento" class="sr-only">Buscar pelo nome ou patrimônio do equipamento</label>
                         <svg xmlns="http://www.w3.org/2000/svg" class="app-tool-search-icon app-muted" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="11" cy="11" r="7" />
                             <path stroke-linecap="round" d="m20 20-4-4" />
@@ -81,7 +81,7 @@
                             name="busca"
                             value="{{ $busca }}"
                             maxlength="100"
-                            placeholder="Buscar equipamento pelo nome"
+                            placeholder="Buscar por nome ou patrimônio"
                             class="app-input"
                         >
                     </div>
@@ -152,6 +152,9 @@
                         <div class="flex items-center justify-between gap-3">
                             <div class="min-w-0 app-calibration-marker status-{{ $equipamento->status_calibragem_key }}">
                                 <p class="truncate text-base font-black">{{ $equipamento->nome }}</p>
+                                @if ($equipamento->patrimonio)
+                                    <p class="mt-0.5 truncate text-[11px] font-semibold app-muted">Patrimônio {{ $equipamento->patrimonio }}</p>
+                                @endif
                             </div>
                             <span class="app-badge app-calibration-badge status-{{ $equipamento->status_calibragem_key }} max-w-[42%] justify-center truncate">{{ $equipamento->status_calibragem }}</span>
                         </div>

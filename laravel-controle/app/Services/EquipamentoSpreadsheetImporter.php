@@ -18,6 +18,7 @@ class EquipamentoSpreadsheetImporter
     private const MAX_ROWS = 5000;
 
     private const HEADER_ALIASES = [
+        'patrimonio' => ['n patrimonio', 'numero patrimonio', 'patrimonio'],
         'nome' => ['descricao', 'nome', 'ferramenta', 'equipamento'],
         'fabricante' => ['fabricante', 'marca'],
         'faixa_uso' => ['faixa de uso', 'faixa uso'],
@@ -36,7 +37,16 @@ class EquipamentoSpreadsheetImporter
         $spreadsheet = $reader->load($path);
 
         try {
-            $rows = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
+            $worksheet = $spreadsheet->getActiveSheet();
+            $highestDataRow = $worksheet->getHighestDataRow();
+            $highestDataColumn = $worksheet->getHighestDataColumn();
+            $rows = $worksheet->rangeToArray(
+                "A1:{$highestDataColumn}{$highestDataRow}",
+                null,
+                true,
+                true,
+                true,
+            );
         } finally {
             $spreadsheet->disconnectWorksheets();
         }
@@ -49,9 +59,13 @@ class EquipamentoSpreadsheetImporter
             ]);
         }
 
-        if (count($rows) - $headerRow > self::MAX_ROWS) {
+        $dataRowCount = collect($rows)
+            ->filter(fn (array $row, int $rowNumber) => $rowNumber > $headerRow && ! $this->rowIsEmpty($row))
+            ->count();
+
+        if ($dataRowCount > self::MAX_ROWS) {
             throw ValidationException::withMessages([
-                'arquivo' => 'A planilha ultrapassa o limite de ' . self::MAX_ROWS . ' linhas.',
+                'arquivo' => 'A planilha ultrapassa o limite de '.self::MAX_ROWS.' linhas.',
             ]);
         }
 
@@ -97,6 +111,7 @@ class EquipamentoSpreadsheetImporter
                 if ($nome === null) {
                     $ignorados++;
                     $this->addWarning($avisos, $avisosOmitidos, "Linha {$rowNumber}: descrição vazia.");
+
                     continue;
                 }
 
@@ -126,6 +141,7 @@ class EquipamentoSpreadsheetImporter
 
                 Equipamento::create([
                     'codigo' => $this->newCode(),
+                    'patrimonio' => $this->columnText($row, $columns, 'patrimonio'),
                     'nome' => $nome,
                     'fabricante' => $this->columnText($row, $columns, 'fabricante'),
                     'modelo' => null,
@@ -284,7 +300,7 @@ class EquipamentoSpreadsheetImporter
 
         if (preg_match('/^(?:cc)?(\d+)$/', $codigoCompacto, $matches)) {
             $centrosCusto->put($this->normalize($matches[1]), $centroCusto);
-            $centrosCusto->put($this->normalize('CC ' . $matches[1]), $centroCusto);
+            $centrosCusto->put($this->normalize('CC '.$matches[1]), $centroCusto);
         }
     }
 
@@ -306,7 +322,7 @@ class EquipamentoSpreadsheetImporter
 
         foreach (['d/m/Y', 'd/m/y', 'Y-m-d', 'd-m-Y'] as $format) {
             try {
-                $date = Carbon::createFromFormat('!' . $format, $value);
+                $date = Carbon::createFromFormat('!'.$format, $value);
 
                 if ($date !== false && $date->format($format) === $value) {
                     return $date->startOfDay();
@@ -371,7 +387,7 @@ class EquipamentoSpreadsheetImporter
     private function newCode(): string
     {
         do {
-            $code = 'FERR-' . Str::upper(Str::random(8));
+            $code = 'FERR-'.Str::upper(Str::random(8));
         } while (Equipamento::where('codigo', $code)->exists());
 
         return $code;
@@ -381,6 +397,7 @@ class EquipamentoSpreadsheetImporter
     {
         if (count($warnings) < 20) {
             $warnings[] = $warning;
+
             return;
         }
 

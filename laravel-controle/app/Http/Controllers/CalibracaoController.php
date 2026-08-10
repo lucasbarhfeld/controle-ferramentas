@@ -35,6 +35,7 @@ class CalibracaoController extends Controller
             'equipamento_ids' => ['required', 'array', 'min:1'],
             'equipamento_ids.*' => ['exists:equipamentos,id'],
             'data_calibragem' => ['required', 'date'],
+            'certificado' => ['nullable', 'string', 'max:255'],
             'observacoes' => ['nullable', 'string'],
         ]);
 
@@ -45,6 +46,7 @@ class CalibracaoController extends Controller
                 'equipamento_id' => $equipamento->id,
                 'user_id' => Auth::id(),
                 'data_calibragem' => $dados['data_calibragem'],
+                'certificado' => $dados['certificado'] ?? null,
                 'resultado' => 'Registrada',
                 'observacoes' => $dados['observacoes'] ?? null,
                 'data_registro' => now(),
@@ -57,7 +59,7 @@ class CalibracaoController extends Controller
 
         $mensagem = $equipamentos->count() === 1
             ? 'Calibração registrada com sucesso.'
-            : $equipamentos->count() . ' calibrações registradas com sucesso.';
+            : $equipamentos->count().' calibrações registradas com sucesso.';
 
         if ($equipamentos->count() === 1) {
             return redirect()

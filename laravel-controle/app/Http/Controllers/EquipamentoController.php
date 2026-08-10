@@ -6,8 +6,8 @@ use App\Models\CentroCusto;
 use App\Models\Equipamento;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EquipamentoController extends Controller
@@ -30,6 +30,9 @@ class EquipamentoController extends Controller
             $equipamentosFiltrados = $equipamentosFiltrados->filter(
                 fn (Equipamento $equipamento) => Str::contains(
                     $this->normalizeSearch($equipamento->nome),
+                    $buscaNormalizada,
+                ) || Str::contains(
+                    $this->normalizeSearch((string) $equipamento->patrimonio),
                     $buscaNormalizada,
                 ),
             );
@@ -103,7 +106,7 @@ class EquipamentoController extends Controller
             ->orderBy('nome')
             ->get();
 
-        $filename = 'ferramentas-' . now()->format('Y-m-d') . '.csv';
+        $filename = 'ferramentas-'.now()->format('Y-m-d').'.csv';
 
         return response()->streamDownload(function () use ($equipamentos) {
             $output = fopen('php://output', 'w');
@@ -111,6 +114,7 @@ class EquipamentoController extends Controller
             fwrite($output, "\xEF\xBB\xBF");
 
             fputcsv($output, [
+                'Patrimônio',
                 'Nome',
                 'Tipo de vinculação',
                 'Fabricante',
@@ -126,6 +130,7 @@ class EquipamentoController extends Controller
 
             foreach ($equipamentos as $equipamento) {
                 fputcsv($output, [
+                    $equipamento->patrimonio,
                     $equipamento->nome,
                     $equipamento->vinculo_tipo_label,
                     $equipamento->fabricante,
@@ -149,6 +154,7 @@ class EquipamentoController extends Controller
     public function store(Request $request)
     {
         $dados = $request->validate([
+            'patrimonio' => ['nullable', 'string', 'max:100'],
             'nome' => ['required', 'string', 'max:255'],
             'fabricante' => ['nullable', 'string', 'max:255'],
             'localizacao' => ['nullable', 'string', 'max:255'],
@@ -162,7 +168,7 @@ class EquipamentoController extends Controller
         ]);
 
         do {
-            $codigo = 'FERR-' . Str::upper(Str::random(8));
+            $codigo = 'FERR-'.Str::upper(Str::random(8));
         } while (Equipamento::where('codigo', $codigo)->exists());
 
         $dados['codigo'] = $codigo;
@@ -206,6 +212,7 @@ class EquipamentoController extends Controller
     public function update(Request $request, Equipamento $equipamento)
     {
         $dados = $request->validate([
+            'patrimonio' => ['nullable', 'string', 'max:100'],
             'nome' => ['required', 'string', 'max:255'],
             'fabricante' => ['nullable', 'string', 'max:255'],
             'localizacao' => ['nullable', 'string', 'max:255'],
@@ -266,13 +273,13 @@ class EquipamentoController extends Controller
     public function destroy(Equipamento $equipamento)
     {
         $fotoPath = $equipamento->foto_path;
-    
+
         $equipamento->delete();
-    
+
         if ($fotoPath) {
             Storage::disk('public')->delete($fotoPath);
         }
-    
+
         return redirect()
             ->route('equipamentos.index')
             ->with('success', 'Ferramenta excluída com sucesso.');

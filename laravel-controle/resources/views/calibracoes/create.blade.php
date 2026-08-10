@@ -4,6 +4,7 @@
             $equipamento->id => [
                 'id' => (string) $equipamento->id,
                 'nome' => $equipamento->nome,
+                'patrimonio' => $equipamento->patrimonio,
                 'responsavel' => $equipamento->vinculo_label,
                 'vinculoTipo' => $equipamento->vinculo_tipo_label,
                 'localizacao' => $equipamento->localizacao ?? 'Localização não definida',
@@ -43,7 +44,8 @@
 
                         if (this.selected.length === 1) {
                             const item = this.equipamentos[this.selected[0]];
-                            return item ? `${item.nome} - ${item.responsavel}` : '1 ferramenta selecionada';
+                            const patrimonio = item?.patrimonio ? ` · Patrimônio ${item.patrimonio}` : '';
+                            return item ? `${item.nome}${patrimonio} - ${item.responsavel}` : '1 ferramenta selecionada';
                         }
 
                         return `${this.selected.length} ferramentas selecionadas`;
@@ -114,7 +116,13 @@
                                             </svg>
                                         </span>
                                         <x-vinculo-icon :type="$equipamento->tipo_vinculacao_efetivo" class="h-4 w-4 shrink-0" />
-                                        <span class="app-equipment-choice-label min-w-0 truncate">{{ $equipamento->nome }} - {{ $equipamento->vinculo_label }}</span>
+                                        <span class="app-equipment-choice-label min-w-0 truncate">
+                                            {{ $equipamento->nome }}
+                                            @if ($equipamento->patrimonio)
+                                                · Patrimônio {{ $equipamento->patrimonio }}
+                                            @endif
+                                            - {{ $equipamento->vinculo_label }}
+                                        </span>
                                     </button>
                                 @endforeach
                             </div>
@@ -129,6 +137,7 @@
                                 <div class="flex items-center justify-between gap-3">
                                     <div class="min-w-0 app-calibration-marker" :class="`status-${item.statusKey || 'sem-calibracao'}`">
                                         <p class="truncate text-base font-black" x-text="item.nome"></p>
+                                        <p x-show="item.patrimonio" class="mt-0.5 truncate text-[11px] app-muted" x-text="`Patrimônio ${item.patrimonio}`"></p>
                                     </div>
                                     <span class="app-badge app-calibration-badge max-w-[42%] justify-center truncate" :class="`status-${item.statusKey || 'sem-calibracao'}`" x-text="item.status"></span>
                                 </div>
@@ -149,6 +158,12 @@
                         <label class="text-xs font-semibold uppercase tracking-[0.24em] app-muted">Data</label>
                         <input type="date" name="data_calibragem" value="{{ old('data_calibragem', now()->format('Y-m-d')) }}" class="app-input" required>
                         @error('data_calibragem')<p class="text-sm text-rose-400">{{ $message }}</p>@enderror
+                    </div>
+
+                    <div class="space-y-2 lg:col-start-2">
+                        <label class="text-xs font-semibold uppercase tracking-[0.24em] app-muted">Certificado</label>
+                        <input type="text" name="certificado" value="{{ old('certificado') }}" maxlength="255" class="app-input" placeholder="Número ou referência do certificado">
+                        @error('certificado')<p class="text-sm text-rose-400">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="space-y-2 lg:col-start-2">
