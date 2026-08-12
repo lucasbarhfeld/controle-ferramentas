@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Equipamento extends Model
@@ -56,6 +57,11 @@ class Equipamento extends Model
     public function calibracoes(): HasMany
     {
         return $this->hasMany(Calibracao::class);
+    }
+
+    public function statusControle(): HasOne
+    {
+        return $this->hasOne(EquipamentoStatusControle::class);
     }
 
     public function getProximaCalibragemAttribute()

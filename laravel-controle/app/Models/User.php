@@ -41,6 +41,11 @@ class User extends Authenticatable
         return $this->hasMany(Calibracao::class, 'user_id');
     }
 
+    public function pushSubscriptions(): HasMany
+    {
+        return $this->hasMany(PushSubscription::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->perfil === 'admin';

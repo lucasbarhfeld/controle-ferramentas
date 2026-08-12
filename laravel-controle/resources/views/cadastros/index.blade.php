@@ -77,6 +77,10 @@
                     </div>
                 </article>
             </section>
+
+            <section class="mt-4 lg:max-w-xl">
+                <x-push-notifications />
+            </section>
         </div>
     </div>
 </x-app-layout>

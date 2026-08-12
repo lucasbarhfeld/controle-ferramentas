@@ -24,6 +24,8 @@
                     </div>
                 </div>
 
+                <x-push-notifications class="mt-4" />
+
                 <form method="POST" action="{{ route('logout') }}" class="mt-3">
                     @csrf
                     <button type="submit" class="app-button app-button-danger w-full">Sair da conta</button>

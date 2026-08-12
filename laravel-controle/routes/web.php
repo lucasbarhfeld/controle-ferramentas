@@ -9,6 +9,7 @@ use App\Http\Controllers\CentroCustoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MeuController;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PushSubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,6 +26,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/me', [MeuController::class, 'index'])->name('me.index');
+
+    Route::post('/notificacoes/inscricoes', [PushSubscriptionController::class, 'store'])
+        ->name('push-subscriptions.store');
+    Route::delete('/notificacoes/inscricoes', [PushSubscriptionController::class, 'destroy'])
+        ->name('push-subscriptions.destroy');
 
     Route::get('/equipamentos/exportar', [EquipamentoController::class, 'export'])
         ->name('equipamentos.export');

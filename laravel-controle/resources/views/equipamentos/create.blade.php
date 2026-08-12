@@ -13,16 +13,16 @@
                 <form method="POST" action="{{ route('equipamentos.store') }}" enctype="multipart/form-data" class="mt-6 space-y-5 lg:grid lg:grid-cols-2 lg:gap-5 lg:space-y-0">
                     @csrf
 
-                    <div class="grid gap-4 sm:grid-cols-[minmax(0,0.65fr)_minmax(0,1.35fr)] lg:col-span-2">
-                        <div>
-                            <label class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Patrimônio</label>
-                            <input type="text" name="patrimonio" value="{{ old('patrimonio') }}" maxlength="100" class="mt-2 app-input" />
-                            @error('patrimonio')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
-                        </div>
+                    <div class="grid gap-4 lg:col-span-2">
                         <div>
                             <label class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Nome</label>
                             <input type="text" name="nome" value="{{ old('nome') }}" class="mt-2 app-input" />
                             @error('nome')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Patrimônio</label>
+                            <input type="text" name="patrimonio" value="{{ old('patrimonio') }}" maxlength="100" class="mt-2 app-input" />
+                            @error('patrimonio')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
                         </div>
                     </div>
 

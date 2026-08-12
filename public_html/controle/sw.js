@@ -1,4 +1,4 @@
-const CACHE_NAME = 'controle-ferramentas-v12';
+const CACHE_NAME = 'controle-ferramentas-v14';
 const STATIC_ASSETS = [
   './manifest.webmanifest',
   './ferramentas-android-192-v10.png',
@@ -56,4 +56,59 @@ self.addEventListener('fetch', (event) => {
       })
     );
   }
+});
+
+self.addEventListener('push', (event) => {
+  let payload = {};
+
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch (error) {
+    payload = { body: event.data ? event.data.text() : '' };
+  }
+
+  const notificationData = {
+    ...(payload.data || {}),
+    url: payload.url || new URL('./dashboard', self.registration.scope).href,
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(payload.title || 'Controle de ferramentas', {
+      body: payload.body || 'Uma ferramenta mudou de estado.',
+      icon: payload.icon || './ferramentas-android-192-v10.png',
+      badge: payload.badge || './ferramentas-favicon-v3.png',
+      tag: payload.tag || 'controle-ferramentas-status',
+      renotify: true,
+      timestamp: payload.timestamp || Date.now(),
+      vibrate: [180, 80, 180],
+      data: notificationData,
+    })
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+
+  const targetUrl = new URL(
+    event.notification.data?.url || './dashboard',
+    self.registration.scope
+  ).href;
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (windowClients) => {
+      for (const client of windowClients) {
+        if (client.url === targetUrl && 'focus' in client) {
+          return client.focus();
+        }
+      }
+
+      const existingClient = windowClients[0];
+      if (existingClient && 'navigate' in existingClient) {
+        await existingClient.navigate(targetUrl);
+        return existingClient.focus();
+      }
+
+      return clients.openWindow(targetUrl);
+    })
+  );
 });

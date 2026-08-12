@@ -341,6 +341,11 @@
     color: var(--app-accent);
   }
 
+  .app-accent-surface {
+    border: 1px solid color-mix(in srgb, var(--app-accent) 34%, transparent);
+    background: var(--app-accent-soft);
+  }
+
   .app-label {
     color: var(--app-text);
   }

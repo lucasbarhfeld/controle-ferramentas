@@ -19,24 +19,13 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-        <link rel="manifest" href="{{ asset('manifest.webmanifest') }}?v=11">
+        <link rel="manifest" href="{{ asset('manifest.webmanifest') }}?v=12">
         <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('ferramentas-favicon-v3.png') }}">
         <link rel="shortcut icon" href="{{ asset('ferramentas-favicon-v3.ico') }}">
         <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('ferramentas-apple-v4.png') }}">
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <link rel="stylesheet" href="{{ asset('vinculos.css') }}?v=5">
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    window.setTimeout(() => {
-                        navigator.serviceWorker.register("{{ asset('sw-v8.js') }}", {
-                            updateViaCache: 'none',
-                        }).catch(() => {});
-                    }, 1000);
-                });
-            }
-        </script>
     </head>
     <body class="font-sans antialiased">
         <div

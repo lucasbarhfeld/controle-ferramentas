@@ -1,0 +1,15 @@
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+
+export default defineConfig({
+    build: {
+        emptyOutDir: true,
+    },
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            publicDirectory: '../public_html/controle',
+            refresh: true,
+        }),
+    ],
+});
