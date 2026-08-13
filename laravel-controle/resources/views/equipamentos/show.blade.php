@@ -11,11 +11,30 @@
                 <div class="space-y-4">
                     <section class="app-card p-4 sm:p-5 lg:p-6">
                         @if ($equipamento->foto_path)
-                            <img
-                                src="{{ asset('storage/' . $equipamento->foto_path) }}"
-                                alt="{{ $equipamento->nome }}"
-                                class="mb-4 aspect-video w-full rounded-[18px] border border-slate-700 object-cover"
+                            <button
+                                type="button"
+                                class="group relative mb-4 flex w-full items-center justify-center overflow-hidden rounded-[18px] border border-slate-700 bg-slate-950"
+                                aria-label="Visualizar foto completa de {{ $equipamento->nome }}"
+                                title="Visualizar foto completa"
+                                x-data
+                                x-on:click="$dispatch('open-modal', 'visualizar-foto-equipamento')"
                             >
+                                <img
+                                    src="{{ asset('storage/' . $equipamento->foto_path) }}"
+                                    alt="{{ $equipamento->nome }}"
+                                    class="block h-auto w-auto max-w-full object-contain transition duration-200 group-hover:scale-[1.01]"
+                                    style="max-height: min(65dvh, 560px);"
+                                >
+
+                                <span class="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/80 text-white shadow-lg backdrop-blur-sm" aria-hidden="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                                        <circle cx="11" cy="11" r="8"></circle>
+                                        <path d="m21 21-4.3-4.3"></path>
+                                        <path d="M11 8v6"></path>
+                                        <path d="M8 11h6"></path>
+                                    </svg>
+                                </span>
+                            </button>
                         @else
                             <div class="app-alert-empty mb-4">
                                 <p class="text-sm font-semibold app-muted">
@@ -196,6 +215,62 @@
             </div>
         </div>
     </div>
+
+    @if ($equipamento->foto_path)
+        <x-modal
+            name="visualizar-foto-equipamento"
+            focusable
+            centered
+            fit-content
+        >
+            <div class="p-2 sm:p-3">
+                <div class="flex items-center justify-between gap-3 px-1 pb-2 sm:pb-3">
+                    <div class="min-w-0">
+                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Foto da ferramenta</p>
+                        <h2 class="mt-1 truncate text-lg font-bold text-white">{{ $equipamento->nome }}</h2>
+                    </div>
+
+                    <div class="flex shrink-0 items-center gap-2">
+                        <a
+                            href="{{ asset('storage/' . $equipamento->foto_path) }}"
+                            download="{{ basename($equipamento->foto_path) }}"
+                            class="app-icon-button app-button-secondary"
+                            aria-label="Baixar foto"
+                            title="Baixar foto"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 3v12"></path>
+                                <path d="m7 10 5 5 5-5"></path>
+                                <path d="M5 21h14"></path>
+                            </svg>
+                        </a>
+
+                        <button
+                            type="button"
+                            class="app-icon-button app-button-secondary"
+                            aria-label="Fechar visualização"
+                            title="Fechar"
+                            x-on:click="$dispatch('close')"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 6 6 18"></path>
+                                <path d="m6 6 12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-center overflow-hidden rounded-[18px] border border-slate-700 bg-slate-950">
+                    <img
+                        src="{{ asset('storage/' . $equipamento->foto_path) }}"
+                        alt="{{ $equipamento->nome }}"
+                        class="block h-auto w-auto object-contain"
+                        style="max-width: calc(100vw - 2rem); max-height: calc(100dvh - 7rem);"
+                    >
+                </div>
+            </div>
+        </x-modal>
+    @endif
 
     @if (auth()->user()->isAdmin())
         <x-modal name="confirmar-exclusao-equipamento" focusable maxWidth="sm">

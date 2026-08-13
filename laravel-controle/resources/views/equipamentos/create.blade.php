@@ -43,9 +43,33 @@
                         @error('faixa_uso')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
                     </div>
 
-                    <div>
+                    <div x-data="{ temArquivo: false }">
                         <label class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Foto da ferramenta</label>
-                        <input type="file" name="foto" accept="image/*" capture="environment" class="mt-2 app-input" />
+                        <div class="mt-2 flex items-center gap-2">
+                            <input
+                                x-ref="foto"
+                                type="file"
+                                name="foto"
+                                accept="image/*"
+                                capture="environment"
+                                class="app-input min-w-0 flex-1"
+                                @change="temArquivo = $event.target.files.length > 0"
+                            />
+                            <button
+                                x-show="temArquivo"
+                                x-cloak
+                                type="button"
+                                class="app-icon-button app-button-secondary shrink-0"
+                                title="Remover arquivo selecionado"
+                                aria-label="Remover arquivo selecionado"
+                                @click="$refs.foto.value = ''; temArquivo = false"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M18 6 6 18"></path>
+                                    <path d="m6 6 12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
                         <p class="mt-2 text-xs app-muted">No celular, este campo abre a câmera para registrar o equipamento.</p>
                         @error('foto')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
                     </div>

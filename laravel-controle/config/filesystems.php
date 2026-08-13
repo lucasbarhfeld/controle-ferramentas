@@ -40,7 +40,9 @@ return [
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            // Shared hosting exposes public_html/controle directly. Keeping uploads
+            // there avoids relying on symbolic links, which Hostinger may block.
+            'root' => env('PUBLIC_STORAGE_PATH', public_path('storage')),
             'url' => rtrim(env('APP_URL', 'http://localhost'), '/').'/storage',
             'visibility' => 'public',
             'throw' => false,

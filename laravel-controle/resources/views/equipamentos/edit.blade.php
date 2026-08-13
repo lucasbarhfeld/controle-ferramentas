@@ -44,13 +44,55 @@
                         @error('faixa_uso')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
                     </div>
 
-                    <div id="foto" class="scroll-mt-24">
+                    <div
+                        id="foto"
+                        class="scroll-mt-24"
+                        x-data="{
+                            removerFoto: @js(old('remover_foto') === '1'),
+                            temArquivo: false
+                        }"
+                    >
                         <label class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-400">Foto da ferramenta</label>
+                        <input type="hidden" name="remover_foto" :value="removerFoto ? '1' : '0'">
                         @if ($equipamento->foto_path)
-                            <img src="{{ asset('storage/' . $equipamento->foto_path) }}" alt="{{ $equipamento->nome }}" class="mt-2 aspect-video w-full rounded-[18px] border border-slate-700 object-cover">
+                            <img
+                                x-show="! removerFoto"
+                                src="{{ asset('storage/' . $equipamento->foto_path) }}"
+                                alt="{{ $equipamento->nome }}"
+                                class="mt-2 aspect-video w-full rounded-[18px] border border-slate-700 object-cover"
+                            >
                         @endif
-                        <input type="file" name="foto" accept="image/*" capture="environment" class="mt-2 app-input" />
-                        <p class="mt-2 text-xs app-muted">No celular, este campo abre a câmera para registrar o equipamento. Enviar uma nova foto substitui a foto atual.</p>
+                        <div class="mt-2 flex items-center gap-2">
+                            <input
+                                x-ref="foto"
+                                type="file"
+                                name="foto"
+                                accept="image/*"
+                                capture="environment"
+                                class="app-input min-w-0 flex-1"
+                                @change="temArquivo = $event.target.files.length > 0; if (temArquivo) removerFoto = false"
+                            />
+                            <button
+                                x-show="temArquivo || @js((bool) $equipamento->foto_path)"
+                                x-cloak
+                                type="button"
+                                class="app-icon-button app-button-secondary shrink-0"
+                                @click="if (temArquivo) { $refs.foto.value = ''; temArquivo = false } else { removerFoto = ! removerFoto }"
+                                :title="temArquivo ? 'Remover arquivo selecionado' : (removerFoto ? 'Manter foto atual' : 'Excluir foto atual')"
+                                :aria-label="temArquivo ? 'Remover arquivo selecionado' : (removerFoto ? 'Manter foto atual' : 'Excluir foto atual')"
+                            >
+                                <svg x-show="! removerFoto || temArquivo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M18 6 6 18"></path>
+                                    <path d="m6 6 12 12"></path>
+                                </svg>
+                                <svg x-show="removerFoto && ! temArquivo" x-cloak xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M9 14 4 9l5-5"></path>
+                                    <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <p x-show="removerFoto" x-cloak class="mt-2 text-xs text-rose-400"></p>
+
                         @error('foto')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
                     </div>
 

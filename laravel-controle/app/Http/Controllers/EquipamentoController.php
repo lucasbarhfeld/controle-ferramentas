@@ -218,12 +218,21 @@ class EquipamentoController extends Controller
             'localizacao' => ['nullable', 'string', 'max:255'],
             'faixa_uso' => ['nullable', 'string', 'max:255'],
             'foto' => ['nullable', 'image', 'max:5120'],
+            'remover_foto' => ['nullable', 'boolean'],
             'tipo_vinculacao' => ['required', 'in:sem_responsavel,usuario,armario_coletivo,centro_custo'],
             'usuario_responsavel_id' => ['nullable', 'required_if:tipo_vinculacao,usuario', 'exists:users,id'],
             'centro_custo_id' => ['nullable', 'required_if:tipo_vinculacao,centro_custo', 'exists:centros_custo,id'],
             'ultima_calibragem' => ['nullable', 'date'],
             'periodo_calibragem_dias' => ['required', 'integer', 'min:1'],
         ]);
+
+        if ($request->boolean('remover_foto') && ! $request->hasFile('foto')) {
+            if ($equipamento->foto_path) {
+                Storage::disk('public')->delete($equipamento->foto_path);
+            }
+
+            $dados['foto_path'] = null;
+        }
 
         if ($request->hasFile('foto')) {
             if ($equipamento->foto_path) {
@@ -232,6 +241,8 @@ class EquipamentoController extends Controller
 
             $dados['foto_path'] = $request->file('foto')->store('equipamentos', 'public');
         }
+
+        unset($dados['remover_foto']);
 
         $equipamento->update($this->normalizeVinculo($dados));
 
