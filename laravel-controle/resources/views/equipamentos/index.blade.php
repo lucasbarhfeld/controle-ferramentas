@@ -11,6 +11,7 @@
         ['label' => 'Críticas', 'status' => 'critica', 'count' => $statusCounts['critica'] ?? 0],
         ['label' => 'Atenção', 'status' => 'proxima', 'count' => $statusCounts['proxima'] ?? 0],
         ['label' => 'Em dia', 'status' => 'em_dia', 'count' => $statusCounts['em_dia'] ?? 0],
+        ['label' => 'Inativas', 'status' => 'inativa', 'count' => $statusCounts['inativa'] ?? 0],
     ];
 @endphp
 
@@ -137,7 +138,7 @@
                         @endphp
                         <a
                             href="{{ route('equipamentos.index', $parametros) }}"
-                            class="app-filter-chip {{ $loop->first ? 'is-wide' : '' }} {{ $statusAtual === $filtro['status'] || (!$statusAtual && !$filtro['status']) ? 'is-active' : '' }}"
+                            class="app-filter-chip {{ $loop->first || $filtro['status'] === 'inativa' ? 'is-wide' : '' }} {{ $statusAtual === $filtro['status'] || (!$statusAtual && !$filtro['status']) ? 'is-active' : '' }}"
                         >
                             <span>{{ $filtro['label'] }}</span>
                             <span class="app-filter-count">{{ $filtro['count'] }}</span>
@@ -150,13 +151,13 @@
                 @forelse ($equipamentos as $equipamento)
                     <a href="{{ route('equipamentos.show', $equipamento) }}" class="app-list-card app-card-hover block text-left">
                         <div class="flex items-center justify-between gap-3">
-                            <div class="min-w-0 app-calibration-marker status-{{ $equipamento->status_calibragem_key }}">
+                            <div class="min-w-0 app-calibration-marker status-{{ $equipamento->ativo ? $equipamento->status_calibragem_key : 'inativa' }}">
                                 <p class="truncate text-base font-black">{{ $equipamento->nome }}</p>
                                 @if ($equipamento->patrimonio)
                                     <p class="mt-0.5 truncate text-[11px] font-semibold app-muted">Patrimônio {{ $equipamento->patrimonio }}</p>
                                 @endif
                             </div>
-                            <span class="app-badge app-calibration-badge status-{{ $equipamento->status_calibragem_key }} max-w-[42%] justify-center truncate">{{ $equipamento->status_calibragem }}</span>
+                            <span class="app-badge app-calibration-badge status-{{ $equipamento->ativo ? $equipamento->status_calibragem_key : 'inativa' }} max-w-[42%] justify-center truncate">{{ $equipamento->ativo ? $equipamento->status_calibragem : 'Inativa' }}</span>
                         </div>
 
                         <div class="mt-3 flex items-center justify-between gap-3 text-xs text-slate-400">
@@ -167,8 +168,8 @@
                                 </p>
                                 <p class="mt-0.5 truncate">{{ $equipamento->faixa_uso ?? $equipamento->localizacao ?? 'Localização não definida' }}</p>
                             </div>
-                            <p class="app-calibration-days status-{{ $equipamento->status_calibragem_key }} shrink-0 font-black">
-                                {{ is_null($equipamento->dias_restantes) ? '-' : $equipamento->dias_restantes . 'd' }}
+                            <p class="app-calibration-days status-{{ $equipamento->ativo ? $equipamento->status_calibragem_key : 'inativa' }} shrink-0 font-black">
+                                {{ ! $equipamento->ativo || is_null($equipamento->dias_restantes) ? '-' : $equipamento->dias_restantes . 'd' }}
                             </p>
                         </div>
                     </a>

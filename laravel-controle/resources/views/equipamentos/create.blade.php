@@ -88,6 +88,18 @@
                         </div>
                     </div>
 
+                    <div class="lg:col-span-2">
+                        <input type="hidden" name="ativo" value="0">
+                        <label class="app-card-compact flex cursor-pointer items-center justify-between gap-4">
+                            <span class="min-w-0">
+                                <span class="block text-sm font-semibold text-white">Ferramenta ativa</span>
+                                <span class="mt-1 block text-xs app-muted">Ferramentas inativas não aparecem no painel, nas notificações ou em novas calibrações.</span>
+                            </span>
+                            <input type="checkbox" name="ativo" value="1" class="h-5 w-5 shrink-0 cursor-pointer accent-sky-500" @checked((bool) old('ativo', true))>
+                        </label>
+                        @error('ativo')<p class="mt-2 text-sm text-rose-400">{{ $message }}</p>@enderror
+                    </div>
+
                     <div class="app-form-actions lg:col-span-2">
                         <button type="submit" class="app-button app-button-primary">Salvar</button>
                         <a href="{{ route('equipamentos.index') }}" class="app-button app-button-secondary">Cancelar</a>

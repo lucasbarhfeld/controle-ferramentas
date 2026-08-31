@@ -50,19 +50,26 @@ class EquipamentoController extends Controller
             );
         }
 
-        $statusCounts = [
-            'todas' => $equipamentosFiltrados->count(),
-            'vencida' => $equipamentosFiltrados->where('status_calibragem_key', 'vencida')->count(),
-            'critica' => $equipamentosFiltrados->where('status_calibragem_key', 'critica')->count(),
-            'proxima' => $equipamentosFiltrados->where('status_calibragem_key', 'atencao')->count(),
-            'em_dia' => $equipamentosFiltrados->where('status_calibragem_key', 'em-dia')->count(),
-        ];
+        $equipamentosAtivos = $equipamentosFiltrados->where('status', Equipamento::STATUS_ATIVO);
 
-        $equipamentos = $equipamentosFiltrados;
+        $statusCounts = [
+            'todas' => $equipamentosAtivos->count(),
+            'vencida' => $equipamentosAtivos->where('status_calibragem_key', 'vencida')->count(),
+            'critica' => $equipamentosAtivos->where('status_calibragem_key', 'critica')->count(),
+            'proxima' => $equipamentosAtivos->where('status_calibragem_key', 'atencao')->count(),
+            'em_dia' => $equipamentosAtivos->where('status_calibragem_key', 'em-dia')->count(),
+            'inativa' => $equipamentosFiltrados->where('status', Equipamento::STATUS_INATIVO)->count(),
+        ];
 
         $filtroStatus = $request->input('status');
 
-        if ($filtroStatus) {
+        if ($filtroStatus === 'inativa') {
+            $equipamentos = $equipamentosFiltrados->where('status', Equipamento::STATUS_INATIVO);
+        } else {
+            $equipamentos = $equipamentosAtivos;
+        }
+
+        if ($filtroStatus && $filtroStatus !== 'inativa') {
             $statusMap = [
                 'vencida' => 'vencida',
                 'critica' => 'critica',
@@ -124,7 +131,8 @@ class EquipamentoController extends Controller
                 'Última calibração',
                 'Próxima calibração',
                 'Período (dias)',
-                'Status',
+                'Situação',
+                'Status da calibração',
                 'Dias restantes',
             ], ';');
 
@@ -140,6 +148,7 @@ class EquipamentoController extends Controller
                     $equipamento->ultima_calibragem?->format('d/m/Y'),
                     $equipamento->proxima_calibragem?->format('d/m/Y'),
                     $equipamento->periodo_calibragem_dias,
+                    $equipamento->status,
                     $equipamento->status_calibragem,
                     $equipamento->dias_restantes,
                 ], ';');
@@ -160,6 +169,7 @@ class EquipamentoController extends Controller
             'localizacao' => ['nullable', 'string', 'max:255'],
             'faixa_uso' => ['nullable', 'string', 'max:255'],
             'foto' => ['nullable', 'image', 'max:5120'],
+            'ativo' => ['required', 'boolean'],
             'tipo_vinculacao' => ['required', 'in:sem_responsavel,usuario,armario_coletivo,centro_custo'],
             'usuario_responsavel_id' => ['nullable', 'required_if:tipo_vinculacao,usuario', 'exists:users,id'],
             'centro_custo_id' => ['nullable', 'required_if:tipo_vinculacao,centro_custo', 'exists:centros_custo,id'],
@@ -173,7 +183,10 @@ class EquipamentoController extends Controller
 
         $dados['codigo'] = $codigo;
         $dados['modelo'] = null;
-        $dados['status'] = 'Ativo';
+        $dados['status'] = $request->boolean('ativo')
+            ? Equipamento::STATUS_ATIVO
+            : Equipamento::STATUS_INATIVO;
+        unset($dados['ativo']);
         $dados = $this->normalizeVinculo($dados);
 
         if ($request->hasFile('foto')) {
@@ -219,6 +232,7 @@ class EquipamentoController extends Controller
             'faixa_uso' => ['nullable', 'string', 'max:255'],
             'foto' => ['nullable', 'image', 'max:5120'],
             'remover_foto' => ['nullable', 'boolean'],
+            'ativo' => ['required', 'boolean'],
             'tipo_vinculacao' => ['required', 'in:sem_responsavel,usuario,armario_coletivo,centro_custo'],
             'usuario_responsavel_id' => ['nullable', 'required_if:tipo_vinculacao,usuario', 'exists:users,id'],
             'centro_custo_id' => ['nullable', 'required_if:tipo_vinculacao,centro_custo', 'exists:centros_custo,id'],
@@ -242,7 +256,10 @@ class EquipamentoController extends Controller
             $dados['foto_path'] = $request->file('foto')->store('equipamentos', 'public');
         }
 
-        unset($dados['remover_foto']);
+        $dados['status'] = $request->boolean('ativo')
+            ? Equipamento::STATUS_ATIVO
+            : Equipamento::STATUS_INATIVO;
+        unset($dados['remover_foto'], $dados['ativo']);
 
         $equipamento->update($this->normalizeVinculo($dados));
 

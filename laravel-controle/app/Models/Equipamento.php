@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,6 +12,10 @@ use Illuminate\Support\Str;
 
 class Equipamento extends Model
 {
+    public const STATUS_ATIVO = 'Ativo';
+
+    public const STATUS_INATIVO = 'Inativo';
+
     public const VINCULO_SEM_RESPONSAVEL = 'sem_responsavel';
 
     public const VINCULO_USUARIO = 'usuario';
@@ -62,6 +67,21 @@ class Equipamento extends Model
     public function statusControle(): HasOne
     {
         return $this->hasOne(EquipamentoStatusControle::class);
+    }
+
+    public function scopeAtivos(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_ATIVO);
+    }
+
+    public function scopeInativos(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_INATIVO);
+    }
+
+    public function getAtivoAttribute(): bool
+    {
+        return $this->status === self::STATUS_ATIVO;
     }
 
     public function getProximaCalibragemAttribute()

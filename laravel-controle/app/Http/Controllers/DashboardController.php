@@ -10,7 +10,9 @@ class DashboardController extends Controller
 {
     public function index(): View
     {
-        $equipamentos = Equipamento::with(['usuarioResponsavel', 'centroCusto'])->get();
+        $equipamentos = Equipamento::ativos()
+            ->with(['usuarioResponsavel', 'centroCusto'])
+            ->get();
 
         $cards = [
             'total' => $equipamentos->count(),
@@ -38,6 +40,7 @@ class DashboardController extends Controller
         });
 
         $ultimasCalibracoes = Calibracao::with(['equipamento.usuarioResponsavel', 'equipamento.centroCusto', 'usuario'])
+            ->whereHas('equipamento', fn ($query) => $query->ativos())
             ->orderByDesc('data_calibragem')
             ->limit(5)
             ->get();

@@ -831,6 +831,10 @@
     @apply border-slate-500;
   }
 
+  .app-calibration-marker.status-inativa {
+    @apply border-slate-500 opacity-80;
+  }
+
   .app-calibration-badge.status-vencida {
     @apply border-rose-500/60 bg-rose-500/10 text-rose-200;
   }
@@ -853,6 +857,10 @@
     @apply border-slate-500/60 bg-slate-500/10 text-slate-200;
   }
 
+  .app-calibration-badge.status-inativa {
+    @apply border-slate-500/60 bg-slate-500/10 text-slate-300;
+  }
+
   html[data-theme='light'] .app-calibration-badge.status-vencida {
     @apply text-rose-600;
   }
@@ -866,6 +874,10 @@
   }
 
   html[data-theme='light'] .app-calibration-badge.status-sem-calibracao {
+    @apply text-slate-600;
+  }
+
+  html[data-theme='light'] .app-calibration-badge.status-inativa {
     @apply text-slate-600;
   }
 
@@ -886,6 +898,10 @@
   }
 
   .app-calibration-days.status-sem-calibracao {
+    color: var(--app-muted);
+  }
+
+  .app-calibration-days.status-inativa {
     color: var(--app-muted);
   }
 
@@ -1021,7 +1037,7 @@
     }
 
     .app-filter-strip {
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(6, minmax(0, 1fr));
       gap: 0.5rem;
       padding: 0.5rem;
     }

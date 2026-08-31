@@ -30,7 +30,8 @@ class CheckEquipmentCalibrationStatuses extends Command
         $transitions = 0;
         $sent = 0;
 
-        Equipamento::with(['usuarioResponsavel', 'centroCusto'])
+        Equipamento::ativos()
+            ->with(['usuarioResponsavel', 'centroCusto'])
             ->orderBy('id')
             ->chunkById(100, function ($equipamentos) use ($webPush, &$checked, &$transitions, &$sent) {
                 foreach ($equipamentos as $equipamento) {
@@ -93,12 +94,11 @@ class CheckEquipmentCalibrationStatuses extends Command
 
         return [
             'title' => "{$equipamento->nome} entrou em {$equipamento->status_calibragem}",
-            'body' => "Responsável: {$responsavel}\nPatrimônio: {$patrimonio}\nVencimento: {$vencimento}",
+            'body' => "Responsável: {$responsavel} • Patrimônio: {$patrimonio} • Vencimento: {$vencimento}",
             'icon' => asset('ferramentas-android-192-v10.png'),
             'badge' => asset('ferramentas-favicon-v3.png'),
             'url' => route('equipamentos.show', $equipamento),
-            'tag' => "equipamento-{$equipamento->id}-{$equipamento->status_calibragem_key}-".now()->timestamp,
-            'timestamp' => now()->getTimestampMs(),
+            'tag' => "equipamento-status-{$equipamento->id}",
             'data' => [
                 'equipamento_id' => $equipamento->id,
                 'estado' => $equipamento->status_calibragem,

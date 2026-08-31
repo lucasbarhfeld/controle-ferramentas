@@ -6,12 +6,14 @@ use App\Models\Calibracao;
 use App\Models\Equipamento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CalibracaoController extends Controller
 {
     public function create(Request $request)
     {
-        $equipamentos = Equipamento::with(['usuarioResponsavel', 'centroCusto'])
+        $equipamentos = Equipamento::ativos()
+            ->with(['usuarioResponsavel', 'centroCusto'])
             ->orderBy('nome')
             ->get();
 
@@ -33,13 +35,18 @@ class CalibracaoController extends Controller
     {
         $dados = $request->validate([
             'equipamento_ids' => ['required', 'array', 'min:1'],
-            'equipamento_ids.*' => ['exists:equipamentos,id'],
+            'equipamento_ids.*' => [
+                Rule::exists('equipamentos', 'id')
+                    ->where(fn ($query) => $query->where('status', Equipamento::STATUS_ATIVO)),
+            ],
             'data_calibragem' => ['required', 'date'],
             'certificado' => ['nullable', 'string', 'max:255'],
             'observacoes' => ['nullable', 'string'],
         ]);
 
-        $equipamentos = Equipamento::whereIn('id', $dados['equipamento_ids'])->get();
+        $equipamentos = Equipamento::ativos()
+            ->whereIn('id', $dados['equipamento_ids'])
+            ->get();
 
         foreach ($equipamentos as $equipamento) {
             Calibracao::create([

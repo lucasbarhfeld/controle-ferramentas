@@ -25,15 +25,6 @@
                                     class="block h-auto w-auto max-w-full object-contain transition duration-200 group-hover:scale-[1.01]"
                                     style="max-height: min(65dvh, 560px);"
                                 >
-
-                                <span class="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-slate-950/80 text-white shadow-lg backdrop-blur-sm" aria-hidden="true">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <path d="m21 21-4.3-4.3"></path>
-                                        <path d="M11 8v6"></path>
-                                        <path d="M8 11h6"></path>
-                                    </svg>
-                                </span>
                             </button>
                         @else
                             <div class="app-alert-empty mb-4">
@@ -61,8 +52,8 @@
                                 </h1>
                             </div>
 
-                            <span class="app-badge app-calibration-badge status-{{ $equipamento->status_calibragem_key }} max-w-[42%] justify-center truncate">
-                                {{ $equipamento->status_calibragem }}
+                            <span class="app-badge app-calibration-badge status-{{ $equipamento->ativo ? $equipamento->status_calibragem_key : 'inativa' }} max-w-[42%] justify-center truncate">
+                                {{ $equipamento->ativo ? $equipamento->status_calibragem : 'Inativa' }}
                             </span>
                         </div>
 
@@ -107,6 +98,11 @@
 
                         <div class="mt-5 space-y-3 text-sm">
                             <div class="flex items-center justify-between gap-3 border-t border-slate-800 pt-3">
+                                <span class="text-slate-500">Situação</span>
+                                <span class="font-semibold {{ $equipamento->ativo ? 'text-emerald-400' : 'text-slate-400' }}">{{ $equipamento->status }}</span>
+                            </div>
+
+                            <div class="flex items-center justify-between gap-3 border-t border-slate-800 pt-3">
                                 <span class="text-slate-500">Patrimônio</span>
                                 <span class="truncate text-right text-white">
                                     {{ $equipamento->patrimonio ?? '-' }}
@@ -137,12 +133,13 @@
                     </section>
 
                     <section class="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                        <a
-                            href="{{ route('calibracoes.create', ['equipamento_id' => $equipamento->id]) }}"
-                            class="app-button app-button-primary"
-                        >
-                            Registrar
-                        </a>
+                        @if ($equipamento->ativo)
+                            <a href="{{ route('calibracoes.create', ['equipamento_id' => $equipamento->id]) }}" class="app-button app-button-primary">
+                                Registrar
+                            </a>
+                        @else
+                            <span class="app-button app-button-secondary cursor-not-allowed opacity-60" aria-disabled="true" title="Reative a ferramenta para registrar uma calibração">Inativa</span>
+                        @endif
 
                         <a
                             href="{{ route('equipamentos.edit', $equipamento) }}"
@@ -152,7 +149,7 @@
                         </a>
 
                         <a
-                            href="{{ route('equipamentos.index') }}"
+                            href="{{ route('equipamentos.index', $equipamento->ativo ? [] : ['status' => 'inativa']) }}"
                             class="app-button app-button-secondary"
                         >
                             Voltar
